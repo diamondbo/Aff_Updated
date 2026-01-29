@@ -1,7 +1,7 @@
 using Alpaca.Markets;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
-
+namespace FirstServ;
 public class AlpacaSettings
 {
     public string AlpacaKey { get; set; } = string.Empty;
@@ -13,8 +13,7 @@ public interface IAlpacaService
     Task<Decimal?> GetBuyingPower();
     Task<Decimal?> GetCash();
     Task<IEnumerable<IPosition>> GetPositions();
-    
-    
+    Task<IAccount> GetAccount();
 }
 
 public class AlpacaService : IAlpacaService
@@ -28,6 +27,12 @@ public class AlpacaService : IAlpacaService
     {
         return Alpaca.Markets.Environments.Paper
             .GetAlpacaTradingClient(new SecretKey(_settings.AlpacaKey, _settings.AlpacaSecret));
+    }
+    public async Task<IAccount> GetAccount()
+    {
+        var client = CreateClient();
+        var account = await client.GetAccountAsync();
+        return account;
     }
     public async Task<decimal?> GetBuyingPower()
     {

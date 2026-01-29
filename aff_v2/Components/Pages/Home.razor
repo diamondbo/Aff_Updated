@@ -1,17 +1,30 @@
 ﻿@page "/"
+@using FirstServ
+@using Alpaca.Markets
+@using System.Runtime.CompilerServices
+@inject IAlpacaService Alserv
 
 <PageTitle>Home</PageTitle>
+<div class="center-header">
+    <i class="bx bx-couch" style="font-size:64px;" />
+       <h1>A F F</h1>
+       <p>@buyingpower</p>
+       <p>@cashh</p>
+       <p>@bp2</p>
 
-<h1>Hello, world!</h1>
+</div>
 
-<p>Buying power: @buyingpower</p>
+
 @code {
-    private decimal? buyingpower;
-    private AlpacaService AlpacaService = default!;
-    
+    private decimal? buyingpower, cashh, bp2;
+    private IAccount? dude;
     protected override async Task OnInitializedAsync()
     {
-        var account = await AlpacaService.GetBuyingPower();
+        var account = await Alserv.GetBuyingPower();
+        var acce = await Alserv.GetCash();
+        var d = await Alserv.GetAccount();
+        bp2 = d.BuyingPower;
         buyingpower = account;
+        cashh = acce;
     }
 }
