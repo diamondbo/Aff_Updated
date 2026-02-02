@@ -14,6 +14,7 @@ public interface IAlpacaService
     Task<Decimal?> GetCash();
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
+    
 }
 
 public class AlpacaService : IAlpacaService

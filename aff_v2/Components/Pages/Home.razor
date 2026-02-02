@@ -2,6 +2,7 @@
 @using FirstServ
 @using Alpaca.Markets
 @using System.Runtime.CompilerServices
+@using System.Diagnostics.Eventing.Reader
 @inject IAlpacaService Alserv
 
 <PageTitle>Home</PageTitle>
@@ -13,13 +14,35 @@
        <p>@bp2</p>
 
 </div>
+<div id = "Posistions">
+    @if (paper_Pos == null)
+    {
+        <p>No Positions </p>
+    }
+    else
+    {
+       <ul>
+        @foreach (var pos in paper_Pos)
+        {
+            <li>@pos.Symbol   @pos.Quantity</li>
+        }
+    </ul>
+    }
+    
+</div>
 
 
 @code {
     private decimal? buyingpower, cashh, bp2;
+    private IEnumerable<IPosition>? paper_Pos;
     private IAccount? dude;
     protected override async Task OnInitializedAsync()
     {
+        var u_pos = await Alserv.GetPositions();
+        if(u_pos != null)
+        {
+              paper_Pos = u_pos;
+        }
         var account = await Alserv.GetBuyingPower();
         var acce = await Alserv.GetCash();
         var d = await Alserv.GetAccount();
