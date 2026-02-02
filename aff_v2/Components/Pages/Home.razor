@@ -30,12 +30,23 @@
     }
     
 </div>
-
+<div class = "Orders">
+    @if (paper_orders != null)
+    {
+        <ul>
+        @foreach(var or in paper_orders)
+        {
+            <li>@or.Symbol</li>
+        }
+        </ul>
+    }
+</div>
 
 @code {
     private decimal? buyingpower, cashh, bp2;
     private IEnumerable<IPosition>? paper_Pos;
-    private IAccount? dude;
+    private IEnumerable<IOrder>? paper_orders;
+    
     protected override async Task OnInitializedAsync()
     {
         var u_pos = await Alserv.GetPositions();
@@ -43,6 +54,15 @@
         {
               paper_Pos = u_pos;
         }
+        var u_opt = await Alserv.GetAllMyOrders();
+        if (u_opt != null)
+        {
+            paper_orders = u_opt;
+        }
+        
+    }
+    protected async Task OnAfterRenderAsync()
+    {
         var account = await Alserv.GetBuyingPower();
         var acce = await Alserv.GetCash();
         var d = await Alserv.GetAccount();
