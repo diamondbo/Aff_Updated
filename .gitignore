@@ -531,3 +531,5 @@ aff.tests/obj/Debug/net10.0/aff.tests.pdb
 aff.tests/obj/Debug/net10.0/aff.tests.sourcelink.json
 aff.tests/obj/Debug/net10.0/ref/aff.tests.dll
 aff.tests/obj/Debug/net10.0/refint/aff.tests.dll
+aff.tests/obj
+aff.tests/bin
