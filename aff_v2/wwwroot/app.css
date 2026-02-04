@@ -62,3 +62,8 @@ h1:focus {
     text-align: center;
     display: block;
 }
+.graphplaceholder {
+    display: flex;
+    width: 300px;
+    height: 100px;
+}
