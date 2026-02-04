@@ -18,7 +18,6 @@
 
 # Mono auto generated files
 mono_crash.*
-aff.tests/obj
 
 # Build results
 [Dd]ebug/
@@ -481,64 +480,3 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
-aff.tests/bin/Debug/net10.0/aff_v2.dll
-aff.tests/bin/Debug/net10.0/aff_v2.pdb
-aff.tests/bin/Debug/net10.0/aff_v2.staticwebassets.endpoints.json
-aff.tests/bin/Debug/net10.0/aff_v2.staticwebassets.runtime.json
-aff.tests/bin/Debug/net10.0/aff.tests.dll
-aff.tests/bin/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.sourcelink.json
-aff.tests/obj/Debug/net10.0/ref/aff.tests.dll
-aff.tests/obj/Debug/net10.0/refint/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.sourcelink.json
-aff.tests/obj/Debug/net10.0/ref/aff.tests.dll
-aff.tests/obj/Debug/net10.0/refint/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.sourcelink.json
-aff.tests/obj/Debug/net10.0/ref/aff.tests.dll
-aff.tests/obj/Debug/net10.0/refint/aff.tests.dll
-aff.tests/bin/Debug/net10.0/aff_v2.dll
-aff.tests/bin/Debug/net10.0/aff_v2.pdb
-aff.tests/bin/Debug/net10.0/aff.tests.dll
-aff.tests/bin/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.sourcelink.json
-aff.tests/obj/Debug/net10.0/ref/aff.tests.dll
-aff.tests/obj/Debug/net10.0/refint/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.dll
-aff.tests/obj/Debug/net10.0/aff.tests.pdb
-aff.tests/obj/Debug/net10.0/aff.tests.sourcelink.json
-aff.tests/obj/Debug/net10.0/ref/aff.tests.dll
-aff.tests/obj/Debug/net10.0/refint/aff.tests.dll
-aff.tests/obj
-aff.tests/bin
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfo.cs
-aff.tests/obj/Debug/net10.0/aff.tests.AssemblyInfoInputs.cache
-aff.tests/obj/Debug/net10.0/aff.tests.csproj.AssemblyReference.cache

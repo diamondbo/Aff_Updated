@@ -1,0 +1,31 @@
+@page "/c_test"
+@using System.Reflection.Emit
+@using gcomp
+@using chartModel
+@rendermode InteractiveServer
+
+<div>
+    <div>
+        <GraphComponent Config = "lineChartConfig" />
+    </div>
+</div>
+
+@code {
+    private ChartConfig lineChartConfig = new()
+    {
+        Type = "line",
+        Data = new()
+        {
+            Labels = new() { "jan", "feb", "mar", "apr"},
+            Datasets = new()
+            {
+                new ChartDataset
+                {
+                    Label = "Revenue",
+                    Data = new() { 1200, 1900, 3000, 5000},
+                    BorderColor = "green"
+                }
+            }
+        }
+    };
+}
