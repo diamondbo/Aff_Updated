@@ -14,6 +14,7 @@ public interface IAlpacaService
     Task<Decimal?> GetCash();
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
+    Task<IEnumerable<IOrder>> GetAllMyOrders();
     
 }
 
@@ -68,5 +69,14 @@ public class AlpacaService : IAlpacaService
             Console.WriteLine($"Alpaca API error: {ex.Message}");
             throw;
         }
+    }
+    public async Task<IEnumerable<IOrder>> GetAllMyOrders()
+    {
+        var client = CreateClient(); // Should return IAlpacaTradingClient
+        var orders = await client.ListOrdersAsync(new ListOrdersRequest
+        {
+            OrderStatusFilter = OrderStatusFilter.All // Optional: All, Open, Closed
+        });
+        return orders;
     }
 }

@@ -1,0 +1,23 @@
+@namespace gcomp
+@using chartModel
+@using System.Security.Cryptography.X509Certificates
+@inject IJSRuntime JS
+
+<div>
+    <canvas id="@CanvasId" width="200" height="100"></canvas>
+</div>
+
+@code{
+    [Parameter]
+    public string CanvasId {get; set;} = Guid.NewGuid().ToString();
+    [Parameter]
+    public ChartConfig Config {get; set;} = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await JS.InvokeVoidAsync("chartInterop.createChart", CanvasId, Config);
+        }
+    }
+}
