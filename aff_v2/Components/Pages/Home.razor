@@ -14,6 +14,7 @@
        <p>@bp2</p>
 
 </div>
+<div class="o_p_container">
 <div id = "Posistions">
     @if (paper_Pos == null)
     {
@@ -21,31 +22,36 @@
     }
     else
     {
-       <ul>
-        @foreach (var pos in paper_Pos)
+       <table>
+        @foreach(var p in paper_Pos)
         {
-            <li>@pos.Symbol   @pos.Quantity</li>
+            <tr>
+                <th>@p.Symbol</th>
+                <th>@p.Quantity</th>
+                <th>@p.AssetCurrentPrice</th>
+            </tr>
         }
-    </ul>
+       </table>
     }
     
 </div>
 <div class = "Orders">
-    @if (paper_orders != null)
+    @if (l_orders != null)
     {
         <ul>
-        @foreach(var or in paper_orders)
+        @foreach(var or in l_orders)
         {
             <li>@or.Symbol</li>
         }
         </ul>
     }
 </div>
-
+</div>
 @code {
     private decimal? buyingpower, cashh, bp2;
     private IEnumerable<IPosition>? paper_Pos;
-    private IEnumerable<IOrder>? paper_orders;
+    private List<IOrder>? l_orders;
+    
     
     protected override async Task OnInitializedAsync()
     {
@@ -53,11 +59,12 @@
         if(u_pos != null)
         {
               paper_Pos = u_pos;
+              
         }
         var u_opt = await Alserv.GetAllMyOrders();
         if (u_opt != null)
         {
-            paper_orders = u_opt;
+            l_orders = u_opt.Take(5).ToList();
         }
         
     }
