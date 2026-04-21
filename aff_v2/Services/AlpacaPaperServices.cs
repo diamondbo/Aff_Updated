@@ -15,6 +15,7 @@ public interface IAlpacaService
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
+    Task<HistoricalBarsRequest> GetSymbolData(DateTime start, DateTime end, string)
     
 }
 
