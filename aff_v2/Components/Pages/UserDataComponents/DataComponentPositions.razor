@@ -2,19 +2,6 @@
 @using Alpaca.Markets
 @using FirstServ
 @inject IAlpacaService Alserv
-<style>
-    .data-component{
-        border: 1px solid #0c0c0c;
-        border-radius: 5px;
-        padding: 20px;
-        margin-bottom: 20px;
-        display: flex;
-    }
-    
-    .data-component h2{
-        margin-top: 0;
-    }
-</style>
 
 <div class="data-component">
  <div id = "Posistions">
@@ -27,7 +14,7 @@
        <ul>
         @for(var i = 0; i < paper_Pos.Count() && i < 5; i++)
         {
-            <li>@paper_Pos.ElementAt(i).Symbol   @paper_Pos.ElementAt(i).Quantity</li>
+            <li>@paper_Pos.ElementAt(i).Symbol :  @paper_Pos.ElementAt(i).Quantity</li>
         }
        </ul>
     }

@@ -8,49 +8,34 @@
 
 <PageTitle>Home</PageTitle>
 <div class="center-header">
-    <i class="bx bx-couch" style="font-size:64px;" />
-       <h1>A F F</h1>
-       <p>@buyingpower</p>
-       <p>@cashh</p>
-       <p>@bp2</p>
+       <p>Buying Power: @buyingpower</p>
+       <p>Cash: @cashh</p>
+       <p>Buying Power: @bp2</p>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-10"></div>
+        <div class="col-md-2">
+            <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Positions</h6>
+                            <DataComponentPositions />
+                        </div>
+            </div>  
+            <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Orders</h6>
+                            <DataComponentOrders />
+                        </div>
+            </div>
 
+        </div>
+    </div>
 </div>
-<div class="home-container">
-    <DataComponentPositions />
-</div>
-<style>
-    .center-header{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-    .home-container{
-        display: flex;
-        align-items: left;
-    }
-</style>
+
 @code {
     private decimal? buyingpower, cashh, bp2;
-    private IEnumerable<IPosition>? paper_Pos;
-    private IEnumerable<IOrder>? paper_orders;
-    
     protected override async Task OnInitializedAsync()
-    {
-        var u_pos = await Alserv.GetPositions();
-        if(u_pos != null)
-        {
-              paper_Pos = u_pos;
-        }
-        var u_opt = await Alserv.GetAllMyOrders();
-        if (u_opt != null)
-        {
-            paper_orders = u_opt;
-        }
-        
-    }
-    protected async Task OnAfterRenderAsync()
     {
         var account = await Alserv.GetBuyingPower();
         var acce = await Alserv.GetCash();

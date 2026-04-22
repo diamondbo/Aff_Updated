@@ -15,7 +15,6 @@ public interface IAlpacaService
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
-    Task<HistoricalBarsRequest> GetSymbolData(DateTime start, DateTime end, string Symbol);
     
 }
 
@@ -79,11 +78,5 @@ public class AlpacaService : IAlpacaService
             OrderStatusFilter = OrderStatusFilter.All // Optional: All, Open, Closed
         });
         return orders;
-    }
-    public async Task<HistoricalBarsRequest> GetSymbolData(DateTime start, DateTime end, string Symbol)
-    {
-        var client = CreateClient();
-        var historicalBarsRequest = new HistoricalBarsRequest(Symbol, start, end, BarTimeFrame.Minute);
-        return historicalBarsRequest;
     }
 }

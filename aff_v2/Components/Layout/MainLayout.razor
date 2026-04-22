@@ -2,12 +2,25 @@
 
 <div class="page">
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    seemingly empty
+                </div>
+                <div class="col-md-8">
+                    <div class="center-header">
+                        <i class="bx bx-couch sm" style="font-size:64px;" />
+                        <h3>A F F</h3>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <NavLink href="/">Home</NavLink>
+                    <NavLink href="/c_test">Graph Page</NavLink>
+                    <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+                </div>
+            </div>
         </div>
-        <div>
-            <NavLink href="/c_test">Graph Page</NavLink>
-        </div>
+        <hr />
         <article class="content px-4">
             @Body
         </article>

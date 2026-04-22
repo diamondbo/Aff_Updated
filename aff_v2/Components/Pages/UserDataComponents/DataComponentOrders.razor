@@ -5,31 +5,20 @@
 
 <div class="data-component">
  <div id = "Orders">
-    @if (paper_orders == null)
-    {
-        <p>No Orders </p>
-    }
-    else
-    {
-       <ul>
-        @foreach (var order in paper_orders)
-        {
-            @if(size_of_orders > 5)
-            {
-                break;
-            }
-             size_of_orders++;
-            @if(order == null)
+       @if(paper_orders == null)
             {
                 <p>No Orders </p>
             }
-            else
-            {
-                size_of_orders++;
-                <li>@order.Symbol   @order.Quantity</li>
+       else
+       {
+        <ul>
+           @for(var i = 0; i < paper_orders.Count() && i < 5; i++)
+           { 
+                <li>@paper_orders.ElementAt(i).Symbol :   @paper_orders.ElementAt(i).Quantity   Status: @paper_orders.ElementAt(i).OrderStatus</li>
             }
-        }
-       </ul>
+        </ul>
+       }
+       
     }
     </div>
 </div>
