@@ -1,0 +1,49 @@
+@using Alpaca.Markets
+@namespace gcomp
+@using FirstServ
+@inject IAlpacaService Alserv
+
+<div class="data-component">
+ <div id = "Orders">
+    @if (paper_orders == null)
+    {
+        <p>No Orders </p>
+    }
+    else
+    {
+       <ul>
+        @foreach (var order in paper_orders)
+        {
+            @if(size_of_orders > 5)
+            {
+                break;
+            }
+             size_of_orders++;
+            @if(order == null)
+            {
+                <p>No Orders </p>
+            }
+            else
+            {
+                size_of_orders++;
+                <li>@order.Symbol   @order.Quantity</li>
+            }
+        }
+       </ul>
+    }
+    </div>
+</div>
+
+@code {
+    private IEnumerable<IOrder>? paper_orders;
+    private int size_of_orders = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var u_opt = await Alserv.GetAllMyOrders();
+        if (u_opt != null)
+        {
+            paper_orders = u_opt;
+        }
+    }
+}

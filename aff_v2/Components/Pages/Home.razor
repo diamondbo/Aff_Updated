@@ -3,6 +3,7 @@
 @using Alpaca.Markets
 @using System.Runtime.CompilerServices
 @using System.Diagnostics.Eventing.Reader
+@using gcomp
 @inject IAlpacaService Alserv
 
 <PageTitle>Home</PageTitle>
@@ -14,34 +15,22 @@
        <p>@bp2</p>
 
 </div>
-<div id = "Posistions">
-    @if (paper_Pos == null)
-    {
-        <p>No Positions </p>
-    }
-    else
-    {
-       <ul>
-        @foreach (var pos in paper_Pos)
-        {
-            <li>@pos.Symbol   @pos.Quantity</li>
-        }
-    </ul>
-    }
-    
+<div class="home-container">
+    <DataComponentPositions />
 </div>
-<div class = "Orders">
-    @if (paper_orders != null)
-    {
-        <ul>
-        @foreach(var or in paper_orders)
-        {
-            <li>@or.Symbol</li>
-        }
-        </ul>
+<style>
+    .center-header{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
     }
-</div>
-
+    .home-container{
+        display: flex;
+        align-items: left;
+    }
+</style>
 @code {
     private decimal? buyingpower, cashh, bp2;
     private IEnumerable<IPosition>? paper_Pos;

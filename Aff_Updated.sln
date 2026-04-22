@@ -5,8 +5,6 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aff_v2", "aff_v2\aff_v2.csproj", "{FF26B176-FDEF-1917-CB7F-1968377586B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aff.tests", "aff.tests\aff.tests.csproj", "{30F6CB8B-04B7-44DF-B580-27C32F8B830A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
