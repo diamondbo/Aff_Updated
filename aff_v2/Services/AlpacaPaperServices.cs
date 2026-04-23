@@ -79,4 +79,12 @@ public class AlpacaService : IAlpacaService
         });
         return orders;
     }
+    public async Task GetHistoricalData(string symbol, DateTime start, DateTime end)
+    {
+        var client = CreateClient();
+        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Minute);
+        var historicalData = await client.ListHistoricalBarsAsync;
+        return historicalData;
+        // Process historicalData as needed
+    }
 }

@@ -7,31 +7,38 @@
 @inject IAlpacaService Alserv
 
 <PageTitle>Home</PageTitle>
-<div class="center-header">
-       <p>Buying Power: @buyingpower</p>
-       <p>Cash: @cashh</p>
-       <p>Buying Power: @bp2</p>
-</div>
-<div class="container">
-    <div class="row">
+
+<div class="row">
         <div class="col-md-10"></div>
+        
         <div class="col-md-2">
-            <div class="card mb-3">
+            <div class="card row mb-2">
                         <div class="card-body">
-                            <h6 class="card-title">Positions</h6>
+                            <h6 class="card-title"><b>Account Info</b></h6>
+                            <hr class="my-2" />
+                            <ul>
+                                <li>Buying Power: @buyingpower</li>
+                                <li>Cash: @cashh</li>
+                            </ul>
+                        </div>
+            </div>
+            <div class="card row mb-2">
+                        <div class="card-body">
+                            <h6 class="card-title"><b>Positions</b></h6>
+                            <hr class="my-2" />
                             <DataComponentPositions />
                         </div>
             </div>  
-            <div class="card mb-3">
+            <div class="card row mb-2">
                         <div class="card-body">
-                            <h6 class="card-title">Orders</h6>
+                            <h6 class="card-title"><b>Orders</b></h6>
+                            <hr class="my-2" />
                             <DataComponentOrders />
                         </div>
             </div>
-
         </div>
-    </div>
 </div>
+
 
 @code {
     private decimal? buyingpower, cashh, bp2;

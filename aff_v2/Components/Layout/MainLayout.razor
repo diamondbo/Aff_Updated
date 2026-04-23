@@ -1,11 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <main>
-        <div class="container">
             <div class="row">
-                <div class="col-md-2">
-                    seemingly empty
+                <div class="col-md-2"> 
                 </div>
                 <div class="col-md-8">
                     <div class="center-header">
@@ -14,13 +11,15 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <NavLink href="/">Home</NavLink>
-                    <NavLink href="/c_test">Graph Page</NavLink>
-                    <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+                    <div class="top-right-nav">
+                        <NavLink href="/">Home</NavLink>
+                        <NavLink href="/c_test">Graph Page</NavLink>
+                        <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+                    </div>
                 </div>
             </div>
-        </div>
         <hr />
+    <main>
         <article class="content px-4">
             @Body
         </article>

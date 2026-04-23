@@ -14,7 +14,7 @@
        <ul>
         @for(var i = 0; i < paper_Pos.Count() && i < 5; i++)
         {
-            <li>@paper_Pos.ElementAt(i).Symbol :  @paper_Pos.ElementAt(i).Quantity</li>
+            <li>@paper_Pos.ElementAt(i).Symbol :  @paper_Pos.ElementAt(i).Quantity | @paper_Pos.ElementAt(i).AssetCurrentPrice $</li>
         }
        </ul>
     }
