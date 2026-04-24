@@ -9,7 +9,19 @@
 <PageTitle>Home</PageTitle>
 
 <div class="row">
-        <div class="col-md-10"></div>
+        <div class="col-md-10">
+            @foreach(var(sym, bars) in data.Items)
+            {
+                <h3>@sym</h3>
+                @foreach(var bar in bars)
+                {
+                    <ul>
+                        <li>@bar.Open</li>
+                        <li>@bar.Close</li>
+                    </ul>
+                }
+            }
+        </div>
         
         <div class="col-md-2">
             <div class="card row mb-2">
@@ -42,6 +54,8 @@
 
 @code {
     private decimal? buyingpower, cashh, bp2;
+    private IMultiPage<IBar>? data;
+    
     protected override async Task OnInitializedAsync()
     {
         var account = await Alserv.GetBuyingPower();
@@ -50,5 +64,7 @@
         bp2 = d.BuyingPower;
         buyingpower = account;
         cashh = acce;
+
+        data = await Alserv.GetHistoricalData("AAPL", DateTime.Now.AddDays(-3), DateTime.Now);
     }
 }

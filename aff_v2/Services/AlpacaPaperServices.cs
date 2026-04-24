@@ -1,5 +1,6 @@
+
 using Alpaca.Markets;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Alpaca.Markets.Extensions;
 using Microsoft.Extensions.Options;
 namespace FirstServ;
 public class AlpacaSettings
@@ -15,6 +16,7 @@ public interface IAlpacaService
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
+   Task<IMultiPage<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end);
     
 }
 
@@ -29,6 +31,11 @@ public class AlpacaService : IAlpacaService
     {
         return Alpaca.Markets.Environments.Paper
             .GetAlpacaTradingClient(new SecretKey(_settings.AlpacaKey, _settings.AlpacaSecret));
+    }
+    private IAlpacaDataClient DataClient()
+    {
+        return Alpaca.Markets.Environments.Paper
+            .GetAlpacaDataClient(new SecretKey(_settings.AlpacaKey, _settings.AlpacaSecret));
     }
     public async Task<IAccount> GetAccount()
     {
@@ -79,12 +86,11 @@ public class AlpacaService : IAlpacaService
         });
         return orders;
     }
-    public async Task GetHistoricalData(string symbol, DateTime start, DateTime end)
+    public async Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken=default)
     {
-        var client = CreateClient();
-        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Minute);
-        var historicalData = await client.ListHistoricalBarsAsync;
-        return historicalData;
-        // Process historicalData as needed
+        var client = DataClient();
+        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Hour);
+        var data = client.GetHistoricalBarsAsAsyncEnumerable(request).WithCancellation(cancellationToken);
+        return data;
     }
 }
