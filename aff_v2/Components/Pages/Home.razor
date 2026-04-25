@@ -18,7 +18,7 @@
             {
             @foreach(var bass in data)
             {
-                <p>@bass.Open</p>
+                <p>@bass.TimeUtc | @bass.Open</p>
             }}
         </div>
         
@@ -61,9 +61,9 @@
         try
         {
            Console.WriteLine("Step 1: GetBuyingPower");
-        buyingpower = await Alserv.GetBuyingPower();
+           buyingpower = await Alserv.GetBuyingPower();
 
-        Console.WriteLine("Step 2: GetCash");
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Console.WriteLine("Step 2: GetCash");
         cashh = await Alserv.GetCash();
 
         Console.WriteLine("Step 3: GetAccount");
@@ -75,6 +75,7 @@
         Console.WriteLine("Step 5: GetHistoricalData");
         var temp = new List<IBar>();
         var bars =await Alserv.GetHistoricalData("AAPL", DateTime.Now.AddDays(-3), DateTime.Now, cancellationToken);
+
         await foreach (var bar in bars)
         {
             temp.Add(bar);
