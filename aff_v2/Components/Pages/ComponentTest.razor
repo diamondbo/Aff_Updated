@@ -2,6 +2,8 @@
 @using Alpaca.Markets
 @using FirstServ
 @using System.Runtime.CompilerServices
+@using System.Linq.Expressions
+@using System.Diagnostics
 @using gcomp
 @using chartModel
 @rendermode InteractiveServer
@@ -16,35 +18,66 @@ else
 {
 <div class="row">
     <div class="col-md-8">
-        <GraphComponent Config = "lineChartConfig" />
+        <GraphComponent @key="lineChartConfig" Config="lineChartConfig" />
     </div>
 </div>
 <div class="row">
     <div class="col-md-8">
-        <table>
-            <tr>
-                <th >1D</th>
-                <th>Week</th>
-                <th>Month</th>
-                <th>3 Months</th>
-            </tr>
-        </table>
+        
+                <span class="range-selector" @onclick='() =>displayinfo("AAPL", 1)'>1D</span>
+                <span class="range-selector" @onclick='() =>displayinfo("AAPL", 7)'>Week</span>
+                <span class="range-selector" @onclick='() =>displayinfo("AAPL", 30)'>Month</span>
+                <span class="range-selector" @onclick='() =>displayinfo("AAPL", 90)'>3 Months</span>
     </div>
 </div>
 }
+<style>
+    .range-selector {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 5px;
 
+    background-color: #f0f0f0;
+}
+.range-selector:hover {
+    transform: scale(1.1);
+    background-color: #e0e0e0;
+}
+</style>
 @code {
     CancellationToken cancellationToken;
     private List<IBar>? data;
     private ChartConfig? lineChartConfig;
     private int pms = 1;
+    private string sym = string.Empty;
+    private int range = 1;
 
     protected override async Task OnInitializedAsync()
     {
+        sym = "AAPL";
         try
         {
+            await displayinfo(sym, range);
+        }
+        catch(Exception ex)
+        {
+            throw new Exception($"there is this problem {ex.Message}");
+        }
+    }
+
+    private async Task displayinfo(string sym, int range)
+    {
+        try
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             var temp = new List<IBar>();
-            var bars =await Alserv.GetHistoricalData("AAPL", DateTime.Now.AddDays(-3), DateTime.Now, cancellationToken);
+            var bars = await Alserv.GetHistoricalData(sym, DateTime.Now.AddDays(range * -1), DateTime.Now, cancellationToken);
+            if(bars == null)
+            {
+                throw new Exception("Get historical data returns null");
+            }
              
             await foreach (var bar in bars)
             {
@@ -69,11 +102,16 @@ else
                     }
                 }
             };
-            Console.WriteLine("Everything loaded");
+            stopwatch.Stop();
+            Console.WriteLine($"Everything loaded symbol {sym} range {range} in {stopwatch.ElapsedMilliseconds} ms");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            StateHasChanged();
         }
     }
 }
