@@ -16,7 +16,7 @@ public interface IAlpacaService
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
-   Task<IMultiPage<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end);
+   Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
     
 }
 
@@ -89,8 +89,19 @@ public class AlpacaService : IAlpacaService
     public async Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken=default)
     {
         var client = DataClient();
-        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Hour);
-        var data = client.GetHistoricalBarsAsAsyncEnumerable(request).WithCancellation(cancellationToken);
-        return data;
+        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Hour)
+        {
+            Feed = MarketDataFeed.Iex 
+        };
+        if(request != null)
+        {
+            return client.GetHistoricalBarsAsAsyncEnumerable(request, cancellationToken);
+        }
+        else
+        {
+            Console.WriteLine("it is null");
+            return client.GetHistoricalBarsAsAsyncEnumerable(request, cancellationToken);
+        }
+        
     }
 }
