@@ -1,16 +1,88 @@
 @page "/predicitons_calculations"
+@using System.Net.Http.Headers
+@rendermode InteractiveServer
 
 <PageTitle>P _ C</PageTitle>
 
+@if(!string.IsNullOrEmpty(message))
+{
+     <div class="success-message">@message</div>
+}
 <div class="row">
     <div class = "col-md-4">
         <div class="card row mb-2">
                         <div class="card-body">
                             <h6 class="card-title"><b>Calculate</b></h6>
-                            <EditForm FormName="basic" OnSubmit="@handleCalc">
-                                <label>
-                            </EditForm>
+
+                                <label for="amount" class="form-label">Amount</label>
+                                <InputText id="amt-input" @bind-Value="amt" class="form-control" />
+
+                                <label for="percent-growth" class="form-label">% Growth</label>
+                                <InputText id="percent_growth" @bind-Value="percentgrowth" class="form-control" />
+
+                                <label for="total" class="form-label">Total</label>
+                                <InputText id="total" @bind-Value="totalamt" class="form-control" />
+
+                                <button type="submit" @onclick="@handleCalc" class="btn btn-primary">Calculate</button>
                         </div>
             </div>
     </div>
 </div>
+
+@code {
+    private string amt = string.Empty;
+    private string percentgrowth = string.Empty;
+    private string totalamt = string.Empty;
+    private string message = string.Empty;
+
+    private string whichisEmpty()
+    {
+        if(string.IsNullOrEmpty(amt))
+        {
+            if(!string.IsNullOrEmpty(percentgrowth) && !string.IsNullOrEmpty(totalamt))
+                return "Theamount";
+            else
+               return "Error";
+        }
+        else if(string.IsNullOrEmpty(percentgrowth))
+        {
+            if(!string.IsNullOrEmpty(amt) && !string.IsNullOrEmpty(totalamt))
+                return "ThePercentage";
+            else
+                return "Error";
+        }
+        else if(string.IsNullOrEmpty(totalamt))
+        {
+            if(!string.IsNullOrEmpty(amt) && !string.IsNullOrEmpty(percentgrowth))
+                return "totalamt";
+            else
+                return "Error";
+        }
+        else
+           return "Error";
+    }
+
+    private void handleCalc()
+    {
+        var test = whichisEmpty();
+        Console.WriteLine($"{test} is what is empty");
+        switch (test)
+        {
+            case "totalamt":
+               if(decimal.TryParse(amt, out decimal amtt) && decimal.TryParse(percentgrowth, out decimal p_gr))
+               {
+                   var t_amm = ((p_gr/100) * amtt) + amtt;
+                   totalamt = t_amm.ToString();
+                   return;
+               }
+               else
+                  message = "Have one empty and valid values in the other ones";
+                  return;
+            case "percentgrowth":
+               if(decimal.TryParse(amt, out decimal amt2) && decimal.TryParse(totalamt, out decimal t_amm2))
+               {
+                   var p_gr2 = 
+               }
+        }
+    }
+}
