@@ -75,7 +75,7 @@
 
           Console.WriteLine("Step 5: GetHistoricalData");
           var temp = new List<IBar>();
-          var bars =await Alserv.GetHistoricalData("AAPL", DateTime.Now.AddDays(-3), DateTime.Now, cancellationToken);
+          var bars =await Alserv.GetHistoricalData("AAPL", DateTime.Now.AddDays(-4), DateTime.Now, cancellationToken);
 
           await foreach (var bar in bars)
           {

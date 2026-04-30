@@ -32,5 +32,10 @@
         {
             paper_orders = u_opt;
         }
+        var symbollist = u_opt.Select(x => x.Symbol).ToList();
+        if(symbollist == null)
+           throw new Exception("This is the shit");
+        var tabledata = await Alserv.GetMultipleSymbols(symbollist, DateTime.Today, DateTime.Now, BarTimeFrame.Hour);
+        
     }
 }

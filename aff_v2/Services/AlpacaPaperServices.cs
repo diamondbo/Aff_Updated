@@ -17,6 +17,8 @@ public interface IAlpacaService
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
    Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
+
+   Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame barTimeFrame);
 }
 
 public class AlpacaService : IAlpacaService
@@ -87,20 +89,51 @@ public class AlpacaService : IAlpacaService
     }
     public async Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken=default)
     {
-        var client = DataClient();
-        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Hour)
+        try
         {
-            Feed = MarketDataFeed.Iex 
-        };
-        if(request != null)
-        {
-            return client.GetHistoricalBarsAsAsyncEnumerable(request, cancellationToken);
+            var dataClient = DataClient();
+            var bartimeframe = new BarTimeFrame();
+
+            TimeSpan difference = end - start;
+            if(difference.Hours > 36 && difference.Days < 200)
+            {
+               bartimeframe = BarTimeFrame.Day;
+            }
+            else if (difference.Days > 200)
+            {
+                bartimeframe = BarTimeFrame.Month;
+            }
+            var req = new HistoricalBarsRequest(symbol, start, end, bartimeframe)
+            {
+                Feed = MarketDataFeed.Iex
+            };
+            var db = dataClient.GetHistoricalBarsAsAsyncEnumerable(req);
+
+            return db;
         }
-        else
+        catch(Exception ex)
         {
-            throw new Exception($"{request} it is null");
+            throw new Exception($"The Error is : {ex.Message}");
         }
         
+    }
+    public async Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame timeFrame)
+    {
+        try
+        {
+            var client = DataClient();
+            var pages = new HistoricalBarsRequest(Symbols, start, end, timeFrame)
+            {
+                Feed = MarketDataFeed.Iex
+            };
+            var req = client.GetHistoricalBarsAsAsyncEnumerable(pages);
+            return req;
+
+        }
+        catch(Exception ex)
+        {
+            throw new Exception($"Error {ex.Message}");
+        }
     }
     
 }
