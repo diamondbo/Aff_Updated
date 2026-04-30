@@ -17,7 +17,6 @@ public interface IAlpacaService
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
    Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
-    
 }
 
 public class AlpacaService : IAlpacaService
@@ -99,9 +98,9 @@ public class AlpacaService : IAlpacaService
         }
         else
         {
-            Console.WriteLine("it is null");
-            return client.GetHistoricalBarsAsAsyncEnumerable(request, cancellationToken);
+            throw new Exception($"{request} it is null");
         }
         
     }
+    
 }
