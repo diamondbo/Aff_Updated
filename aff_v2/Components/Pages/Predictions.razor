@@ -81,8 +81,13 @@
             case "percentgrowth":
                if(decimal.TryParse(amt, out decimal amt2) && decimal.TryParse(totalamt, out decimal t_amm2))
                {
-                   var p_gr2 = 
+                   var p_gr2 = ((t_amm2 - amt2)/amt2) * 100;
+                   percentgrowth = p_gr2.ToString();
+                   return;
                }
+               else
+                  message = "Have one empty and valid values in the other ones";
+                  return;
         }
     }
 }

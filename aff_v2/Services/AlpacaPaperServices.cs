@@ -95,13 +95,18 @@ public class AlpacaService : IAlpacaService
             var bartimeframe = new BarTimeFrame();
 
             TimeSpan difference = end - start;
-            if(difference.Hours > 36 && difference.Days < 200)
+            Console.WriteLine($"{difference.Hours.ToString()}");
+            if(difference.Hours > 36 && difference.Days < 20)
             {
                bartimeframe = BarTimeFrame.Day;
             }
-            else if (difference.Days > 200)
+            else if (difference.Days > 20)
             {
                 bartimeframe = BarTimeFrame.Month;
+            }
+            else if (difference.Hours < 36)
+            {
+                bartimeframe = BarTimeFrame.Hour;
             }
             var req = new HistoricalBarsRequest(symbol, start, end, bartimeframe)
             {
