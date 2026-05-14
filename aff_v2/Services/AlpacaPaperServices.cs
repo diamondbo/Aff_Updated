@@ -16,8 +16,8 @@ public interface IAlpacaService
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
+    Task<IIntervalCalendar> GetLastOpen();
    Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
-
    Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame barTimeFrame);
 }
 
@@ -38,6 +38,7 @@ public class AlpacaService : IAlpacaService
         return Alpaca.Markets.Environments.Paper
             .GetAlpacaDataClient(new SecretKey(_settings.AlpacaKey, _settings.AlpacaSecret));
     }
+    
     public async Task<IAccount> GetAccount()
     {
         var client = CreateClient();
@@ -95,16 +96,19 @@ public class AlpacaService : IAlpacaService
             var bartimeframe = new BarTimeFrame();
 
             TimeSpan difference = end - start;
-            Console.WriteLine($"{difference.Hours.ToString()}");
-            if(difference.Hours > 36 && difference.Days < 20)
+            string formatted = $"{(int)difference.TotalHours}h {difference.Minutes}m";
+
+            Console.WriteLine(formatted); 
+
+            if(difference.TotalHours > 168 && difference.TotalHours < 721)
             {
                bartimeframe = BarTimeFrame.Day;
             }
-            else if (difference.Days > 20)
+            else if (difference.TotalHours > 721)
             {
-                bartimeframe = BarTimeFrame.Month;
+                bartimeframe = BarTimeFrame.Week;
             }
-            else if (difference.Hours < 36)
+            else if (difference.TotalHours <= 168)
             {
                 bartimeframe = BarTimeFrame.Hour;
             }
@@ -140,5 +144,25 @@ public class AlpacaService : IAlpacaService
             throw new Exception($"Error {ex.Message}");
         }
     }
-    
+    public async Task<IIntervalCalendar> GetLastOpen()
+    {
+        var client = CreateClient();
+        var d_interval = new Interval<DateTime>(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(-1));
+
+        var calendar = await client.ListIntervalCalendarAsync(
+                                        new CalendarRequest().WithInterval(d_interval)
+        );
+        
+        var lastOpenTime = calendar.LastOrDefault();
+        if(lastOpenTime != null)
+        {
+            Console.WriteLine($"last open was {lastOpenTime.GetTradingOpenTimeUtc()}");
+            return lastOpenTime;
+
+        }
+        else
+        {
+            throw new Exception("something");
+        }
+    }
 }

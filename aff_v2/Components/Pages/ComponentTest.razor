@@ -57,6 +57,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         sym = "AAPL";
+        var ls = await Alserv.GetLastOpen();
+        Console.WriteLine($"lastdaymarketopen {ls.GetTradingOpenTimeUtc()} UTC");
         try
         {
             await displayinfo(sym, range);
@@ -73,6 +75,11 @@ else
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             var temp = new List<IBar>();
+            
+            if(range == 1)
+            {
+                var cl = Alserv.GetAccount();
+            }
             var bars = await Alserv.GetHistoricalData(sym, DateTime.Now.AddDays(range * -1), DateTime.Now, cancellationToken);
             if(bars == null)
             {
