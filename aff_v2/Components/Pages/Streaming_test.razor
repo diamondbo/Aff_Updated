@@ -1,0 +1,51 @@
+@page "/test"
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using chartModel
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+
+<h3>Live Stock Price</h3>
+
+<p>@symbol</p>
+<p>@latestPrice</p>
+<p>@lastUpdate.ToLocalTime().ToString()</p>
+
+@code {
+    private HubConnection? hubConnection;
+
+    private decimal latestPrice;
+
+    private string symbol = "";
+
+    private DateTime lastUpdate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/stockhub"))
+            .WithAutomaticReconnect()
+            .Build();
+
+        hubConnection.On<StockPriceDto>(
+            "PriceUpdated",
+            async data =>
+            {
+                symbol = data.Symbol;
+                latestPrice = data.Price;
+                lastUpdate = data.Time;
+
+                await InvokeAsync(StateHasChanged);
+            });
+
+        await hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

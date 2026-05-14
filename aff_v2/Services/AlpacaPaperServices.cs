@@ -16,8 +16,9 @@ public interface IAlpacaService
     Task<IEnumerable<IPosition>> GetPositions();
     Task<IAccount> GetAccount();
     Task<IEnumerable<IOrder>> GetAllMyOrders();
+    Task<IIntervalCalendar> GetLastOpen();
    Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
-    
+   Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame barTimeFrame);
 }
 
 public class AlpacaService : IAlpacaService
@@ -37,6 +38,7 @@ public class AlpacaService : IAlpacaService
         return Alpaca.Markets.Environments.Paper
             .GetAlpacaDataClient(new SecretKey(_settings.AlpacaKey, _settings.AlpacaSecret));
     }
+    
     public async Task<IAccount> GetAccount()
     {
         var client = CreateClient();
@@ -88,20 +90,79 @@ public class AlpacaService : IAlpacaService
     }
     public async Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken=default)
     {
-        var client = DataClient();
-        var request = new HistoricalBarsRequest(symbol, start, end, BarTimeFrame.Hour)
+        try
         {
-            Feed = MarketDataFeed.Iex 
-        };
-        if(request != null)
+            var dataClient = DataClient();
+            var bartimeframe = new BarTimeFrame();
+
+            TimeSpan difference = end - start;
+            string formatted = $"{(int)difference.TotalHours}h {difference.Minutes}m";
+
+            Console.WriteLine(formatted); 
+
+            if(difference.TotalHours > 168 && difference.TotalHours < 721)
+            {
+               bartimeframe = BarTimeFrame.Day;
+            }
+            else if (difference.TotalHours > 721)
+            {
+                bartimeframe = BarTimeFrame.Week;
+            }
+            else if (difference.TotalHours <= 168)
+            {
+                bartimeframe = BarTimeFrame.Hour;
+            }
+            var req = new HistoricalBarsRequest(symbol, start, end, bartimeframe)
+            {
+                Feed = MarketDataFeed.Iex
+            };
+            var db = dataClient.GetHistoricalBarsAsAsyncEnumerable(req);
+
+            return db;
+        }
+        catch(Exception ex)
         {
-            return client.GetHistoricalBarsAsAsyncEnumerable(request, cancellationToken);
+            throw new Exception($"The Error is : {ex.Message}");
+        }
+        
+    }
+    public async Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame timeFrame)
+    {
+        try
+        {
+            var client = DataClient();
+            var pages = new HistoricalBarsRequest(Symbols, start, end, timeFrame)
+            {
+                Feed = MarketDataFeed.Iex
+            };
+            var req = client.GetHistoricalBarsAsAsyncEnumerable(pages);
+            return req;
+
+        }
+        catch(Exception ex)
+        {
+            throw new Exception($"Error {ex.Message}");
+        }
+    }
+    public async Task<IIntervalCalendar> GetLastOpen()
+    {
+        var client = CreateClient();
+        var d_interval = new Interval<DateTime>(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(-1));
+
+        var calendar = await client.ListIntervalCalendarAsync(
+                                        new CalendarRequest().WithInterval(d_interval)
+        );
+        
+        var lastOpenTime = calendar.LastOrDefault();
+        if(lastOpenTime != null)
+        {
+            Console.WriteLine($"last open was {lastOpenTime.GetTradingOpenTimeUtc()}");
+            return lastOpenTime;
+
         }
         else
         {
-            Console.WriteLine("it is null");
-            return client.GetHistoricalBarsAsAsyncEnumerable(request, cancellationToken);
+            throw new Exception("something");
         }
-        
     }
 }
