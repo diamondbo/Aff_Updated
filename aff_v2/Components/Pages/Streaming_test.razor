@@ -2,13 +2,14 @@
 
 @using Microsoft.AspNetCore.SignalR.Client
 @using chartModel
+@rendermode InteractiveServer
 @inject NavigationManager Navigation
 
 <h3>Live Stock Price</h3>
 
 <p>@symbol</p>
 <p>@latestPrice</p>
-<p>@lastUpdate</p>
+<p>@lastUpdate.ToLocalTime().ToString()</p>
 
 @code {
     private HubConnection? hubConnection;
