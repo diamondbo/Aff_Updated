@@ -18,7 +18,8 @@ public interface IAlpacaService
     Task<IEnumerable<IOrder>> GetAllMyOrders();
     Task<IIntervalCalendar> GetLastOpen();
    Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
-   Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame barTimeFrame);
+   Task<IMultiPage<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame barTimeFrame, CancellationToken cancellationToken);
+   Task<IMarketMovers> GetTopMoversAsync(int TotalSymbols);
 }
 
 public class AlpacaService : IAlpacaService
@@ -126,7 +127,7 @@ public class AlpacaService : IAlpacaService
         }
         
     }
-    public async Task<IAsyncEnumerable<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame timeFrame)
+    public async Task<IMultiPage<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame timeFrame, CancellationToken cancellationToken=default)
     {
         try
         {
@@ -135,7 +136,7 @@ public class AlpacaService : IAlpacaService
             {
                 Feed = MarketDataFeed.Iex
             };
-            var req = client.GetHistoricalBarsAsAsyncEnumerable(pages);
+            var req = await client.GetHistoricalBarsAsync(pages, cancellationToken);
             return req;
 
         }
@@ -149,20 +150,23 @@ public class AlpacaService : IAlpacaService
         var client = CreateClient();
         var d_interval = new Interval<DateTime>(DateTime.Today.AddDays(-7), DateTime.Today.AddDays(-1));
 
-        var calendar = await client.ListIntervalCalendarAsync(
-                                        new CalendarRequest().WithInterval(d_interval)
-        );
+        var calendar = await client.ListIntervalCalendarAsync(new CalendarRequest().WithInterval(d_interval));
         
         var lastOpenTime = calendar.LastOrDefault();
         if(lastOpenTime != null)
         {
             Console.WriteLine($"last open was {lastOpenTime.GetTradingOpenTimeUtc()}");
             return lastOpenTime;
-
         }
         else
         {
             throw new Exception("something");
         }
+    }
+    public async Task<IMarketMovers> GetTopMoversAsync(int TotalSymbols)
+    {
+        var client = DataClient();
+        var dat = await client.GetTopMarketMoversAsync(TotalSymbols);
+        return dat;
     }
 }

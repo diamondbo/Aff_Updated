@@ -80,7 +80,7 @@ else
             {
                 var cl = Alserv.GetAccount();
             }
-            var bars = await Alserv.GetHistoricalData(sym, DateTime.Now.AddDays(range * -1), DateTime.Now, cancellationToken);
+            var bars = await Alserv.GetHistoricalData(sym, DateTime.Now.AddDays(range * -1), DateTime.Now, cancellationToken)!;
             if(bars == null)
             {
                 throw new Exception("Get historical data returns null");
