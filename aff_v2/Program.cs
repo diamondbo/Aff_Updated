@@ -6,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddSignalR();
+builder.Services.AddHostedService<AlpacaStreamingService>();
+
 builder.Services.Configure<AlpacaSettings>(builder.Configuration.GetSection("AlpacaInfo"));
 builder.Services.AddScoped<IAlpacaService, AlpacaService>();
 
@@ -22,6 +25,7 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+app.MapHub<StockHub>("/stockhub");
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 

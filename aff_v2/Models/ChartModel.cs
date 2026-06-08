@@ -17,3 +17,9 @@ public class ChartConfig
         public string BorderColor { get; set; } = "blue";
         public bool Fill { get; set; } = false;
     }
+    public class StockPriceDto
+    {
+        public string Symbol { get; set; } = string.Empty;
+        public DateTime Time { get; set; }
+        public decimal Price { get; set; }
+    }

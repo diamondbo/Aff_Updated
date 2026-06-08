@@ -11,21 +11,21 @@
 <div class="row">
     <div class = "col-md-4">
         <div class="card row mb-2">
-                        <div class="card-body">
-                            <h6 class="card-title"><b>Calculate</b></h6>
+                <div class="card-body">
+                    <h6 class="card-title"><b>Calculate</b></h6>
 
-                                <label for="amount" class="form-label">Amount</label>
-                                <InputText id="amt-input" @bind-Value="amt" class="form-control" />
+                    <label for="amount" class="form-label">Amount</label>
+                    <InputText id="amt-input" @bind-Value="amt" class="form-control" />
 
-                                <label for="percent-growth" class="form-label">% Growth</label>
-                                <InputText id="percent_growth" @bind-Value="percentgrowth" class="form-control" />
+                    <label for="percent-growth" class="form-label">% Growth</label>
+                    <InputText id="percent_growth" @bind-Value="percentgrowth" class="form-control" />
 
-                                <label for="total" class="form-label">Total</label>
-                                <InputText id="total" @bind-Value="totalamt" class="form-control" />
+                    <label for="total" class="form-label">Total</label>
+                    <InputText id="total" @bind-Value="totalamt" class="form-control" />
 
-                                <button type="submit" @onclick="@handleCalc" class="btn btn-primary">Calculate</button>
-                        </div>
-            </div>
+                    <button type="submit" @onclick="@handleCalc" class="btn btn-primary">Calculate</button>
+                </div>
+        </div>
     </div>
 </div>
 

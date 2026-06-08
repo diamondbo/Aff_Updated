@@ -1,0 +1,86 @@
+@using Alpaca.Markets
+@using FirstServ
+@page "/top_mov"
+@inject IAlpacaService AlpacaService
+
+@rendermode InteractiveServer
+<PageTitle>Top Movers</PageTitle>
+
+<style>
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    th {
+        width: 25%;
+    }
+</style>
+<div class="container-fluid px-4">
+<div class="row">
+     @if(gain_and_loss == null)
+     {
+        <div>Loading...</div>
+     }
+     else
+     {
+        <div class="col-md-6">
+        <div class="row "><h5 class="text-center">Gainers</h5></div>
+        <table class="table table-sm table-bordered table-striped table-hover">
+        <thead class="table-dark">
+            <td>Symbol</td>
+            <td>Price</td>
+            <td>Price Change</td>
+            <td>Percentage Change</td>
+        </thead>
+        <tbody>
+            @foreach(var g in gain_and_loss.Gainers)
+            {
+                var p_change = g.Price-GetPriceChange(g.Price, g.PercentChange);
+                <tr>
+                    <td>@g.Symbol</td>
+                    <td>@g.Price.ToString("#0.00'$'")</td>
+                    <td>@p_change.ToString("+#0.00;-#0.00")</td>
+                    <td>@g.PercentChange.ToString("+#0.00'%'")</td>
+                </tr>
+            }
+        </tbody>
+        </table>
+        </div>
+        <div class="col-md-6">
+        <div class="row "><h5 class="text-center">Losers</h5></div>
+        <table class="table table-sm table-striped table-hover">
+        <thead class="table-dark">
+            <td>Symbol</td>
+            <td>Price</td>
+            <td>Price Change</td>
+            <td>Percentage Change</td>
+        </thead>
+        <tbody>
+            @foreach(var g in gain_and_loss.Losers)
+            {
+                var p_change = g.Price-GetPriceChange(g.Price, g.PercentChange);
+                <tr>
+                    <td>@g.Symbol</td>
+                    <td>@g.Price$</td>
+                    <td>@p_change.ToString("+#0.00;-#0.00")</td>
+                    <td>@g.PercentChange.ToString("+#0.00'%';-#0.00'%'")</td>
+                </tr>
+            }
+        </tbody>
+        </table>
+        </div>
+     }      
+</div>
+</div>
+@code
+{
+    private IMarketMovers? gain_and_loss;
+    protected override async Task OnInitializedAsync()
+    {
+        gain_and_loss = await AlpacaService.GetTopMoversAsync(5);
+    }
+    private decimal GetPriceChange(decimal price, decimal Percentage)
+    {
+        return price / (1 + (Percentage / 100m));
+    }
+}
