@@ -1,0 +1,61 @@
+@page "/positions"
+
+@using Alpaca.Markets
+@namespace gcomp
+@using FirstServ
+@inject IAlpacaService Alserv
+
+<h1>Positions</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Quantity</th>
+                        <th>Current Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (paper_orders == null)
+                    {
+                        <tr>
+                            <td colspan="3">No Positions</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var pos in paper_orders.Take(5))
+                        {
+                            <tr>
+                                <td><a href="/positionsdetails/@pos.Symbol">@pos.Symbol</a></td>
+                                <td>@pos.Quantity</td>
+                                <td>@pos.AssetCurrentPrice $</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <DataComponentOrders />
+        </div>
+    </div>
+</div>
+@code {
+    private IEnumerable<IPosition>? paper_orders;
+    private int size_of_orders = 0;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var u_opt = await Alserv.GetPositions();
+        if (u_opt != null)
+        {
+            paper_orders = u_opt;
+        }
+        var symbollist = u_opt!.Select(x => x.Symbol).ToList();
+        if(symbollist == null)
+           throw new Exception("This is the shit");
+    }
+}

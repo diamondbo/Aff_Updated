@@ -20,6 +20,9 @@ public interface IAlpacaService
    Task<IAsyncEnumerable<IBar>>? GetHistoricalData(string symbol, DateTime start, DateTime end, CancellationToken cancellationToken);
    Task<IMultiPage<IBar>>? GetMultipleSymbols(List<string> Symbols, DateTime start, DateTime end, BarTimeFrame barTimeFrame, CancellationToken cancellationToken);
    Task<IMarketMovers> GetTopMoversAsync(int TotalSymbols);
+   Task<IPosition> BuySymbol(string symbol, int quantity);
+   Task<IPosition> SellSymbol(string symbol, int quantity);
+   //Task<IPosition> SellAllOwnedSymbols();
 }
 
 public class AlpacaService : IAlpacaService
@@ -45,6 +48,34 @@ public class AlpacaService : IAlpacaService
         var client = CreateClient();
         var account = await client.GetAccountAsync();
         return account;
+    }
+    public async Task<IPosition> BuySymbol(string symbol, int quantity)
+    {
+        var client = CreateClient();
+        var order = await client.PostOrderAsync(OrderSide.Buy.Limit(symbol, quantity, 0.01m));
+        if (order != null)
+        {
+            Console.WriteLine($"Bought {quantity} shares of {symbol} at limit price 0.01");
+            return await client.GetPositionAsync(symbol);
+        }
+        else
+        {
+            throw new Exception("Failed to place buy order.");
+        }
+    }
+    public async Task<IPosition> SellSymbol(string symbol, int quantity)
+    {
+        var client = CreateClient();
+        var order = await client.PostOrderAsync(OrderSide.Sell.Limit(symbol, quantity, 0.01m));
+        if (order != null)
+        {
+            Console.WriteLine($"Sold {quantity} shares of {symbol} at limit price 0.01");
+            return await client.GetPositionAsync(symbol);
+        }
+        else
+        {
+            throw new Exception("Failed to place sell order.");
+        }
     }
     public async Task<decimal?> GetBuyingPower()
     {

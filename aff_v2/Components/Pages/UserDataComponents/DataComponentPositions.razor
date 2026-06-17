@@ -1,6 +1,7 @@
 @namespace gcomp
 @using Alpaca.Markets
 @using FirstServ
+@rendermode InteractiveServer
 @inject IAlpacaService Alserv
 
 <div class="data-component">
@@ -12,23 +13,129 @@
     else
     {
        <ul>
-        @for(var i = 0; i < paper_Pos.Count() && i < 5; i++)
-        {
-            <li>@paper_Pos.ElementAt(i).Symbol :  @paper_Pos.ElementAt(i).Quantity | @paper_Pos.ElementAt(i).AssetCurrentPrice $</li>
-        }
+       @for (var i = 0; i < paper_Pos.Count() && i < 5; i++)
+      {
+      var symbol = paper_Pos.ElementAt(i).Symbol;
+      var pos = paper_Pos.ElementAt(i);
+
+    <li>@pos.Symbol : @pos.Quantity | @pos.AssetCurrentPrice $
+        <div class="position-buttons">
+            <button class="buy-button"  @onclick="() => BuyFloatPage(symbol)">Buy</button>
+            <button class="sell-button" @onclick="() => SellFloatPage(symbol)">Sell</button>
+        </div>
+    </li>
+}
        </ul>
     }
     </div>
 </div>
-
+<div class="confirm-float" style="display:@(confirmFloatVisible ? "block" : "none")">
+    @if(confirmchecker == 1)
+    {
+        <p style="color:green">@confirmMessage</p>
+    }
+    else
+    {
+        <p style="color:red">@confirmMessage</p>
+    }
+    <p>@confirmMessage</p>
+    <button class="close-button" style="position: absolute; top: 10px; right: 10px;" @onclick="()=> confirmFloatVisible = false">X</button>
+</div>
+<div class="buy-float" style="display:@(buyFloatVisible ? "block" : "none")">
+    <h3>@((tisBuy) ? "Buy" : "Sell") More @selectedSymbol</h3>
+    <button class="close-button" style="position: absolute; top: 10px; right: 10px;" @onclick="()=> buyFloatVisible = false">X</button>
+    <input type="number" placeholder="Quantity" @bind="buyQuantity" />
+    <button @onclick="()=> ConfirmTransaction(selectedSymbol, buyQuantity, tisBuy)">Confirm</button>
+</div>
+<style>
+    .position-buttons {
+        display: inline-block;
+        margin-left: 10px;
+    }
+    .buy-button, .sell-button {
+        margin-right: 5px;
+    }
+    .buy-float {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        box-shadow:  0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid black;
+        bordrer-radius: 8px;
+        z-index: 1000;
+    }
+    .confirm-float {
+        position: fixed;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        border: 1px solid black;
+        z-index: 1000;
+    }
+</style>
 @code {
     private IEnumerable<IPosition>? paper_Pos;
+    private int buyQuantity;
+    private bool buyFloatVisible = false;
+    private bool confirmFloatVisible = false;
+    string confirmMessage = string.Empty;
+    bool tisBuy = true;
+    int confirmchecker = 0;
+    private string selectedSymbol = string.Empty;
     protected override async Task OnInitializedAsync()
     {
         var u_pos = await Alserv.GetPositions();
         if(u_pos != null)
         {
               paper_Pos = u_pos;
+        }
+    }
+    private void BuyFloatPage(string symbol)
+    {
+        // Make a div appear with a form to buy more of the stock
+        // The form should have an input for quantity and a submit button
+        buyFloatVisible = true;
+        selectedSymbol = symbol;
+        tisBuy = true;
+    }
+    private void SellFloatPage(string symbol)
+    {
+        // Make a div appear with a form to sell the stock
+        // The form should have an input for quantity and a submit button
+        buyFloatVisible = true;
+        selectedSymbol = symbol;
+        tisBuy = false;
+    }
+    private async Task ConfirmTransaction(string symbol, int quantity, bool isBuy)
+    {
+        var result = isBuy ? await Alserv.BuySymbol(symbol, quantity) : await Alserv.SellSymbol(symbol, quantity);
+        if(result != null)
+        {
+            // Show confirmation
+            buyFloatVisible = false;
+            confirmFloatVisible = true;
+            confirmchecker = 1;
+            confirmMessage = $"Order confirmed for {quantity} shares of {symbol}.";
+        }
+        else
+        {
+            // Show error
+            buyFloatVisible = false;
+            confirmFloatVisible = true;
+            confirmchecker = 0;
+            confirmMessage = $"Order failed for {quantity} shares of {symbol}.";
+        }
+
+        // Refresh positions
+        var u_pos = await Alserv.GetPositions();
+        if (u_pos != null)
+        {
+            paper_Pos = u_pos;
         }
     }
 }

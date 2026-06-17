@@ -1,0 +1,126 @@
+@page "/positionsdetails/{Symbol}"
+@using Alpaca.Markets
+@using FirstServ
+@using System.Runtime.CompilerServices
+@using System.Linq.Expressions
+@using System.Diagnostics
+@using gcomp
+@using chartModel
+@rendermode InteractiveServer
+
+@inject IAlpacaService Alserv
+
+@if(lineChartConfig == null)
+{
+    <p>Loading</p>
+}
+else
+{
+<div class="row">
+    <div class="col-md-8">
+        <GraphComponent @key="lineChartConfig" Config="lineChartConfig" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        
+                <span class="range-selector" @onclick='() =>displayinfo(sym, 1)'>1D</span>
+                <span class="range-selector" @onclick='() =>displayinfo(sym, 7)'>Week</span>
+                <span class="range-selector" @onclick='() =>displayinfo(sym, 30)'>Month</span>
+                <span class="range-selector" @onclick='() =>displayinfo(sym, 90)'>3 Months</span>
+    </div>
+</div>
+}
+<style>
+    .range-selector {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 5px;
+
+    background-color: #f0f0f0;
+}
+.range-selector:hover {
+    transform: scale(1.1);
+    background-color: #e0e0e0;
+}
+</style>
+@code {
+    [Parameter]
+    public string Symbol { get; set; } = string.Empty;
+    CancellationToken cancellationToken;
+    private List<IBar>? data;
+    private ChartConfig? lineChartConfig;
+    private int pms = 1;
+    private string sym = string.Empty;
+    private int range = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sym = Symbol;
+        var ls = await Alserv.GetLastOpen();
+        Console.WriteLine($"lastdaymarketopen {ls.GetTradingOpenTimeUtc()} UTC");
+        try
+        {
+            await displayinfo(sym, range);
+        }
+        catch(Exception ex)
+        {
+            throw new Exception($"there is this problem {ex.Message}");
+        }
+    }
+
+    private async Task displayinfo(string sym, int range)
+    {
+        try
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            var temp = new List<IBar>();
+            
+            if(range == 1)
+            {
+                var cl = Alserv.GetAccount();
+            }
+            var bars = await Alserv.GetHistoricalData(sym, DateTime.Now.AddDays(range * -1), DateTime.Now, cancellationToken)!;
+            if(bars == null)
+            {
+                throw new Exception("Get historical data returns null");
+            }
+             
+            await foreach (var bar in bars)
+            {
+                temp.Add(bar);
+            }
+            data = temp;
+
+            lineChartConfig = new ChartConfig()
+            {
+                Type = "line",
+                Data = new ChartData()
+                {
+                    Labels = data.Select(b => b.TimeUtc.ToString("MM/dd HH:mm")).ToList(),
+                    Datasets = new()
+                    {
+                        new ChartDataset()
+                        {
+                            Label = sym,
+                            Data = data.Select(d => (double)d.Close).ToList(),
+                            BorderColor = "green"
+                        }
+                    }
+                }
+            };
+            stopwatch.Stop();
+            Console.WriteLine($"Everything loaded symbol {sym} range {range} in {stopwatch.ElapsedMilliseconds} ms");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+        finally
+        {
+            StateHasChanged();
+        }
+    }
+}
