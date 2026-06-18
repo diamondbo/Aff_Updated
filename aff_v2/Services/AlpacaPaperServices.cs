@@ -22,7 +22,7 @@ public interface IAlpacaService
    Task<IMarketMovers> GetTopMoversAsync(int TotalSymbols);
    Task<IPosition> BuySymbol(string symbol, int quantity);
    Task<IPosition> SellSymbol(string symbol, int quantity);
-   //Task<IPosition> SellAllOwnedSymbols();
+   Task<Dictionary<string, IPosition>> SellAllOwnedSymbols();
 }
 
 public class AlpacaService : IAlpacaService
@@ -76,6 +76,28 @@ public class AlpacaService : IAlpacaService
         {
             throw new Exception("Failed to place sell order.");
         }
+    }
+    public async Task<Dictionary<string, IPosition>> SellAllOwnedSymbols()
+    {
+        var client = CreateClient();
+        var positions = await client.ListPositionsAsync();
+        var soldPositions = new Dictionary<string, IPosition>();
+        foreach (var position in positions)
+        {
+            int quantityToSell = int.Parse(position.Quantity.ToString());
+            var order = await client.PostOrderAsync(OrderSide.Sell.Limit(position.Symbol, quantityToSell, 0.01m));
+            if (order != null)
+            {
+                Console.WriteLine($"Sold {quantityToSell} shares of {position.Symbol} at limit price 0.01");
+                soldPositions.Add("sold", position);
+            }
+            else
+            {
+                Console.WriteLine($"Failed to place sell order for {position.Symbol}.");
+                soldPositions.Add("failed", position);
+            }
+        }
+        return soldPositions; 
     }
     public async Task<decimal?> GetBuyingPower()
     {
