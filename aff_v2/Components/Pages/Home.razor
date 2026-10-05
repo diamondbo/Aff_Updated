@@ -44,7 +44,7 @@
 
 @code {
     private decimal? buyingpower, cashh, bp2;
-    private IList<IBar> data;
+    private IList<IBar> data = new List<IBar>();
     CancellationToken cancellationToken;
     
     protected override async Task OnInitializedAsync()
